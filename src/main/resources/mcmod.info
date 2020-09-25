@@ -1,0 +1,15 @@
+[
+{
+  "modid": "thaumicspeedup",
+  "name": "Thaumic Speedup",
+  "description": "Fixes Thaumcraft's problems, speeds up loading time and more.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Rongmario"],
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
