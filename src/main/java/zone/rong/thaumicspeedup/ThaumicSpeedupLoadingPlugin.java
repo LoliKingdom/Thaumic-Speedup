@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixins;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Map;
 
 
@@ -16,7 +17,11 @@ public class ThaumicSpeedupLoadingPlugin implements IFMLLoadingPlugin {
     
     public ThaumicSpeedupLoadingPlugin() {
         try {
-            loadModJar(new File("./mods/".concat(Config.fileName)));
+            File jarLocation = new File("./mods/".concat(Config.fileName));
+            if (!jarLocation.exists()) {
+                throw new FileNotFoundException("You need to have Thaumcraft installed! Or if you have, please change /config/thaumicspeedup.cfg's string to it's jar file name!");
+            }
+            loadModJar(jarLocation);
         } catch (Exception e) {
             e.printStackTrace();
         }
