@@ -17,7 +17,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.2'
+version = '1.3'
 group = 'zone.rong' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'thaumicspeedup'
 
@@ -34,6 +34,11 @@ minecraft {
     ]
     clientJvmArgs.addAll(args)
     serverJvmArgs.addAll(args)
+}
+
+configurations {
+    embed
+    implementation.extendsFrom(embed)
 }
 
 repositories {
@@ -53,6 +58,7 @@ dependencies {
     deobfCompile 'curse.maven:thaumcraft:2629023'
     deobfCompile 'com.azanor.baubles:Baubles:1.12-1.5.2'
 
+    /*
     compile ('org.spongepowered:mixin:0.8.1-SNAPSHOT') {
         exclude module: 'asm-commons'
         exclude module: 'asm-tree'
@@ -62,29 +68,19 @@ dependencies {
         exclude module: 'log4j-core'
         exclude module: 'gson'
     }
+     */
 
-    // You may put jars on which you depend on in ./libs or you may define them like so..
-    // compile "some.group:artifact:version:classifier"
-    // compile "some.group:artifact:version"
-
-    // Real examples
-    // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // These dependencies get remapped to your current MCP mappings
-    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    embed ('org.spongepowered:mixin:0.8.1-SNAPSHOT') {
+        transitive = false
+    }
 
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
+    from (configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude 'LICENSE.txt', 'META-INF/MANIFSET.MF', 'META-INF/maven/**', 'META-INF/*.RSA', 'META-INF/*.SF'
+    }
     manifest {
         attributes([
             // "Specification-Title": "examplemod",
@@ -97,6 +93,7 @@ jar {
             "FMLCorePluginContainsFMLMod": true,
             "FMLCorePlugin": 'zone.rong.thaumicspeedup.ThaumicSpeedupLoadingPlugin',
             "ForceLoadAsMod": true,
+            'MixinConfigs': 'mixins.thaumicspeedup.json',
             "TweakClass": 'org.spongepowered.asm.launch.MixinTweaker'
         ])
     }
