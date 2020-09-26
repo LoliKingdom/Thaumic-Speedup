@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 
-@Mod(modid = "thaumicspeedup", name = "Thaumic Speedup", version = "1.1", dependencies = "required:thaumcraft")
+@Mod(modid = "thaumicspeedup", name = "Thaumic Speedup", version = "1.2", dependencies = "required:thaumcraft")
 public class ThaumicSpeedup {
 
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
