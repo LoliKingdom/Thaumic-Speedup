@@ -1,14 +1,17 @@
 package zone.rong.thaumicspeedup;
 
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import org.apache.commons.io.FileUtils;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 
@@ -17,9 +20,19 @@ public class ThaumicSpeedupLoadingPlugin implements IFMLLoadingPlugin {
     
     public ThaumicSpeedupLoadingPlugin() {
         try {
-            File jarLocation = new File("./mods/".concat(Config.fileName));
+            File parent = new File("./config/", "/thaumicspeedup");
+            parent.mkdir();
+            File nameFile = new File(parent, "/thaumcraft_jar_name.txt");
+            String thaumcraftName;
+            if (nameFile.createNewFile() || nameFile.length() <= 0L) {
+                thaumcraftName = "Thaumcraft-1.12.2-6.1.BETA26.jar";
+                FileUtils.writeStringToFile(nameFile, thaumcraftName, Charset.defaultCharset());
+            } else {
+                thaumcraftName = FileUtils.readFileToString(nameFile, Charset.defaultCharset());
+            }
+            File jarLocation = new File("./mods/".concat(thaumcraftName));
             if (!jarLocation.exists()) {
-                throw new FileNotFoundException("You need to have Thaumcraft installed! Or if you have, please change /config/thaumicspeedup.cfg's string to it's jar file name!");
+                ThaumicSpeedup.LOGGER.fatal("You need to have Thaumcraft installed! Or if you have, please change /config/thaumicspeedup/thaumcraft_jar_name.txt's string to Thaumcraft's jar file name!");
             }
             loadModJar(jarLocation);
         } catch (Exception e) {

@@ -6,10 +6,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CommonInternalsMixin",
-    "CommonProxyMixin",
-    "ConfigAspectsMixin",
     "ThaumcraftApiHelperMixin",
     "ThaumcraftApiMixin",
-    "ThaumcraftCraftingManagerMixin"
+    "ThaumcraftCraftingManagerMixin",
+    "ThaumcraftMixin"
   ]
 }
