@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 
-@Mod(modid = "thaumicspeedup", name = "Thaumic Speedup", version = "1.4", dependencies = "required:thaumcraft")
+@Mod(modid = "thaumicspeedup", name = "Thaumic Speedup", version = "2.0", dependencies = "required:thaumcraft")
 public class ThaumicSpeedup {
 
     public static ThreadLocal<Collection<IRecipe>> RECIPES;

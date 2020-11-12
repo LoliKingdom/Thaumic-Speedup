@@ -17,7 +17,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.4'
+version = '2.0'
 group = 'zone.rong' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'thaumicspeedup'
 
@@ -27,13 +27,6 @@ minecraft {
     version = "1.12.2-14.23.5.2847"
     runDir = "run"
     mappings = "stable_39"
-    def args = [
-            '-Dfml.coreMods.load=zone.rong.thaumicspeedup.ThaumicSpeedupLoadingPlugin',
-            '-Dmixin.hotSwap=true',
-            '-Dmixin.checks.interfaces=true'
-    ]
-    clientJvmArgs.addAll(args)
-    serverJvmArgs.addAll(args)
 }
 
 configurations {
@@ -55,22 +48,12 @@ repositories {
 }
 
 dependencies {
+    compile files("./libs/mixinbooter-1.0.jar")
+
     deobfCompile 'curse.maven:thaumcraft:2629023'
     deobfCompile 'com.azanor.baubles:Baubles:1.12-1.5.2'
 
-    /*
-    compile ('org.spongepowered:mixin:0.8.1-SNAPSHOT') {
-        exclude module: 'asm-commons'
-        exclude module: 'asm-tree'
-        exclude module: 'commons-io'
-        exclude module: 'launchwrapper'
-        exclude module: 'guava'
-        exclude module: 'log4j-core'
-        exclude module: 'gson'
-    }
-     */
-
-    embed ('org.spongepowered:mixin:0.8.1-SNAPSHOT') {
+    provided ('org.spongepowered:mixin:0.8.1-SNAPSHOT') { // Don't include in the build
         transitive = false
     }
 
@@ -80,22 +63,6 @@ dependencies {
 jar {
     from (configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
         exclude 'LICENSE.txt', 'META-INF/MANIFSET.MF', 'META-INF/maven/**', 'META-INF/*.RSA', 'META-INF/*.SF'
-    }
-    manifest {
-        attributes([
-            // "Specification-Title": "examplemod",
-            // "Specification-Vendor": "examplemodsareus",
-            // "Specification-Version": "1", // We are version 1 of ourselves
-            // "Implementation-Title": project.name,
-            // "Implementation-Version": "${version}",
-            // "Implementation-Vendor" :"examplemodsareus",
-            // "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "FMLCorePluginContainsFMLMod": true,
-            "FMLCorePlugin": 'zone.rong.thaumicspeedup.ThaumicSpeedupLoadingPlugin',
-            "ForceLoadAsMod": true,
-            'MixinConfigs': 'mixins.thaumicspeedup.json',
-            "TweakClass": 'org.spongepowered.asm.launch.MixinTweaker'
-        ])
     }
 }
 

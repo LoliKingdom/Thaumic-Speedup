@@ -36,6 +36,7 @@ public class ThaumcraftMixin {
             CommonInternals.objectTags.clear();
             try {
                 File parent = new File(Loader.instance().getConfigDir(), "/thaumicspeedup");
+                parent.mkdir();
                 File file = new File(parent, "/cache.lock");
                 if (file.createNewFile() || file.length() <= 0L) {
                     ConfigAspects.postInit();
