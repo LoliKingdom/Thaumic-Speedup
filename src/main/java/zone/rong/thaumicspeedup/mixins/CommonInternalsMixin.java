@@ -1,32 +1,35 @@
 package zone.rong.thaumicspeedup.mixins;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import thaumcraft.api.internal.CommonInternals;
 
-@Mixin(CommonInternals.class)
+@Mixin(value = CommonInternals.class, remap = false)
 public class CommonInternalsMixin {
 
     /**
      * @author Rongmario
      * @reason Eliminate ItemStack#copy + Use NBTTagCompound's native hashCode implementation
      */
-    @Overwrite(remap = false)
+    @Overwrite
     public static int generateUniqueItemstackId(ItemStack stack) {
-        // Preconditions.checkArgument(stack.getCount() == 1, "Aspects should only be registered on ItemStacks with a count of 1!");
-        return stack.serializeNBT().hashCode();
+        NBTTagCompound tag = stack.serializeNBT();
+        tag.removeTag("Count");
+        return tag.hashCode();
     }
 
     /**
      * @author Rongmario
      * @reason Eliminate ItemStack#copy + Use NBTTagCompound's native hashCode implementation
      */
-    @Overwrite(remap = false)
+    @Overwrite
     public static int generateUniqueItemstackIdStripped(ItemStack stack) {
-        // Preconditions.checkArgument(stack.getCount() == 1, "Aspects should only be registered on ItemStacks with a count of 1!");
-        stack.setTagCompound(null);
-        return stack.serializeNBT().hashCode();
+        NBTTagCompound tag = stack.serializeNBT();
+        tag.removeTag("Count");
+        tag.removeTag("tag");
+        return tag.hashCode();
     }
 
 }

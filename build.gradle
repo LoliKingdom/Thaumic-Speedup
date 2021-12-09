@@ -17,7 +17,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '2.0'
+version = '3.0'
 group = 'zone.rong' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'thaumicspeedup'
 
@@ -27,6 +27,7 @@ minecraft {
     version = "1.12.2-14.23.5.2847"
     runDir = "run"
     mappings = "stable_39"
+    useDepAts = true
 }
 
 configurations {
@@ -35,27 +36,32 @@ configurations {
 }
 
 repositories {
-    mavenCentral()
     maven {
-        url = "https://www.cursemaven.com"
+        url 'https://www.cursemaven.com'
     }
     maven {
-        url = 'https://repo.spongepowered.org/maven'
+        url 'https://repo.spongepowered.org/maven'
     }
     maven {
         url 'https://maven.thiakil.com'
     }
+    maven {
+        url 'https://jitpack.io'
+    }
 }
 
 dependencies {
-    compile files("./libs/mixinbooter-1.0.jar")
 
-    deobfCompile 'curse.maven:thaumcraft:2629023'
+    deobfCompile 'curse.maven:mixin-booter-419286:3321174'
+    // deobfCompile 'curse.maven:persistency-554387:3554782'
+    deobfCompile 'curse.maven:thaumcraft-223628:2629023'
     deobfCompile 'com.azanor.baubles:Baubles:1.12-1.5.2'
 
     provided ('org.spongepowered:mixin:0.8.1-SNAPSHOT') { // Don't include in the build
         transitive = false
     }
+
+    compile 'com.github.LoliKingdom:Persistency:1.2.0'
 
 }
 

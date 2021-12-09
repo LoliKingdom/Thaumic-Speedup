@@ -10,7 +10,7 @@ import thaumcraft.api.ThaumcraftApiHelper;
 
 import java.util.List;
 
-@Mixin(ThaumcraftApiHelper.class)
+@Mixin(value = ThaumcraftApiHelper.class, remap = false)
 public class ThaumcraftApiHelperMixin {
 
     @Unique private static String[] oreNames;
@@ -19,7 +19,7 @@ public class ThaumcraftApiHelperMixin {
      * @author Rongmario
      * @reason A little optimization to not retrieve a new array every time a wildcard entry is dealt with + cache trimmed entry
      */
-    @Overwrite(remap = false)
+    @Overwrite
     public static List<ItemStack> getOresWithWildCards(String oreDict) {
         oreDict = oreDict.trim();
         if (oreDict.endsWith("*")) {
