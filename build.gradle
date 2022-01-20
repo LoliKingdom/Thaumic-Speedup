@@ -17,7 +17,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '3.0'
+version = '4.0'
 group = 'zone.rong' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'thaumicspeedup'
 
@@ -53,9 +53,11 @@ repositories {
 dependencies {
 
     deobfCompile 'curse.maven:mixin-booter-419286:3321174'
-    // deobfCompile 'curse.maven:persistency-554387:3554782'
-    deobfCompile 'curse.maven:thaumcraft-223628:2629023'
     deobfCompile 'com.azanor.baubles:Baubles:1.12-1.5.2'
+    deobfCompile 'curse.maven:thaumcraft-223628:2629023'
+
+    deobfCompile 'curse.maven:bwm-core-294335:2624990'
+    deobfCompile 'curse.maven:bwm-suite-246760:3289033'
 
     provided ('org.spongepowered:mixin:0.8.1-SNAPSHOT') { // Don't include in the build
         transitive = false

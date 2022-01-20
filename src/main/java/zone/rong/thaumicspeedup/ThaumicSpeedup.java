@@ -4,6 +4,7 @@ import com.google.common.base.Stopwatch;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
@@ -18,8 +19,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Set;
 
-@Mod(modid = "thaumicspeedup", name = "Thaumic Speedup", version = "3.0", dependencies = "required:thaumcraft;required:persistency")
+@Mod(modid = "thaumicspeedup", name = "Thaumic Speedup", version = "4.0", dependencies = "required:thaumcraft;required:persistency")
 public class ThaumicSpeedup {
 
     public static final Logger LOGGER = LogManager.getLogger("ThaumicSpeedup");
@@ -27,6 +29,8 @@ public class ThaumicSpeedup {
 
     public static volatile boolean persistentAspectsCache = true;
     public static Thread aspectsThread;
+
+    public static ThreadLocal<Set<ResourceLocation>> craftingRegistryKeys;
 
     @Mod.EventHandler
     public void construct(FMLConstructionEvent event) {

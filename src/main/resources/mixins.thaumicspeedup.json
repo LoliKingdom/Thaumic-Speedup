@@ -1,13 +1,14 @@
 {
-  "package": "zone.rong.thaumicspeedup.mixins",
-  "refmap": "mixins.thaumicspeedup.refmap.json",
-  "target": "@env(DEFAULT)",
-  "minVersion": "0.6",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "CommonInternalsMixin",
-    "ConfigAspectsMixin",
-    "ThaumcraftApiHelperMixin",
-    "ThaumcraftApiMixin"
-  ]
+	"package": "zone.rong.thaumicspeedup.mixins",
+	"refmap": "mixins.thaumicspeedup.refmap.json",
+	"target": "@env(DEFAULT)",
+	"minVersion": "0.6",
+	"compatibilityLevel": "JAVA_8",
+	"mixins": [
+		"CommonInternalsMixin",
+		"ConfigAspectsMixin",
+		"ThaumcraftApiHelperMixin",
+		"ThaumcraftApiMixin",
+		"ThaumcraftCraftingManagerMixin"
+	]
 }
