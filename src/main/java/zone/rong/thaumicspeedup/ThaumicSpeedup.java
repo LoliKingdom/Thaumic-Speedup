@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Set;
 
-@Mod(modid = "thaumicspeedup", name = "Thaumic Speedup", version = "4.0", dependencies = "required:thaumcraft;required:persistency")
+@Mod(modid = Tags.MODID, name = Tags.MODNAME, version = Tags.VERSION, dependencies = "required:thaumcraft;required:persistency")
 public class ThaumicSpeedup {
 
     public static final Logger LOGGER = LogManager.getLogger("ThaumicSpeedup");
