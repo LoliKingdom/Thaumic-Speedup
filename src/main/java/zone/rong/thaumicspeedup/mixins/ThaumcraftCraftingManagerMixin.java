@@ -1,21 +1,24 @@
 package zone.rong.thaumicspeedup.mixins;
 
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.api.internal.CommonInternals;
 import thaumcraft.common.lib.crafting.ThaumcraftCraftingManager;
 import zone.rong.thaumicspeedup.ThaumicSpeedup;
-
-import java.util.Set;
 
 @Mixin(ThaumcraftCraftingManager.class)
 public class ThaumcraftCraftingManagerMixin {
 
-	@Redirect(method = "generateTagsFromCraftingRecipes", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/RegistryNamespaced;getKeys()Ljava/util/Set;"))
-	private static Set getThreadSafeRegistry(RegistryNamespaced instance) {
-		return ThaumicSpeedup.craftingRegistryKeys == null ? CraftingManager.REGISTRY.getKeys() : ThaumicSpeedup.craftingRegistryKeys.get();
+	@Inject(method = "generateTags(Lnet/minecraft/item/ItemStack;)Lthaumcraft/api/aspects/AspectList;", at = @At("RETURN"), remap = false)
+	private static void captureLateObjectTags(ItemStack is, CallbackInfoReturnable<AspectList> cir) {
+		if (ThaumicSpeedup.lateObjectTags != null) {
+			ThaumicSpeedup.lateObjectTags.put(CommonInternals.generateUniqueItemstackId(is), cir.getReturnValue());
+			ThaumicSpeedup.LOGGER.debug("Captured late object tag for item: " + is.getItem().getRegistryName());
+		}
 	}
 
 }

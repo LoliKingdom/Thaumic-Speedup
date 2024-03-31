@@ -6,11 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSets;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -18,17 +14,14 @@ import org.spongepowered.asm.mixin.Shadow;
 import thaumcraft.api.aspects.AspectRegistryEvent;
 import thaumcraft.api.internal.CommonInternals;
 import thaumcraft.common.config.ConfigAspects;
-import zone.rong.thaumicspeedup.ConcurrentHashMapTypedMap;
 import zone.rong.thaumicspeedup.ThaumicSpeedup;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Mixin(value = ConfigAspects.class, remap = false)
 public abstract class ConfigAspectsMixin {
@@ -43,46 +36,46 @@ public abstract class ConfigAspectsMixin {
     @Overwrite
     public static void postInit() {
         if (!(boolean) Launch.blackboard.getOrDefault("ConsistentLoad", false) || !ThaumicSpeedup.persistentAspectsCache) {
-            ThaumicSpeedup.aspectsThread = new Thread(() -> {
-                Stopwatch stopwatch = Stopwatch.createStarted();
-                ThaumicSpeedup.LOGGER.info("Offloading aspects registration...");
-                ThaumicSpeedup.craftingRegistryKeys = ThreadLocal.withInitial(() -> ObjectSets.unmodifiable(new ObjectOpenHashSet<>(CraftingManager.REGISTRY.getKeys())));
-                CommonInternals.objectTags.clear();
-                registerItemAspects();
-                registerEntityAspects();
-                AspectRegistryEvent are = new AspectRegistryEvent();
-                are.register = ThaumicSpeedup.PROXY_INSTANCE;
-                MinecraftForge.EVENT_BUS.post(are);
-                ThaumicSpeedup.LOGGER.info("Aspects registration complete! Taken {}, now writing to disk.", stopwatch.stop());
-                try {
-                    stopwatch.start();
-                    File tempAspectsCache = File.createTempFile("thaumicspeedup-aspects_cache", null);
-                    tempAspectsCache.deleteOnExit();
-                    FileOutputStream fileOutputStream = new FileOutputStream(tempAspectsCache);
-                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                    Int2ObjectMap<Object2IntMap<String>> objectTags = new Int2ObjectOpenHashMap<>();
-                    CommonInternals.objectTags.forEach((k, v) -> objectTags.put(k, v.aspects.entrySet().stream().collect(Object2IntArrayMap::new, (m, av) -> m.put(av.getKey().getTag(), av.getValue()), Map::putAll)));
-                    objectOutputStream.writeObject(objectTags);
-                    fileOutputStream.close();
-                    objectOutputStream.close();
-                    File thaumicSpeedupFolder = new File((File) Launch.blackboard.get("CachesFolderFile"), "thaumicspeedup");
-                    thaumicSpeedupFolder.mkdirs();
-                    File aspectsCache = new File(thaumicSpeedupFolder, "aspects_cache.bin");
-                    aspectsCache.createNewFile();
-                    Files.move(tempAspectsCache, aspectsCache);
-                    ThaumicSpeedup.LOGGER.info("Aspects serialization complete! Taken {}.", stopwatch.stop());
-                } catch (IOException e) {
-                    ThaumicSpeedup.LOGGER.error("Aspects serialization failed!");
-                    e.printStackTrace();
-                }
-                ThaumicSpeedup.craftingRegistryKeys = null;
-                CommonInternals.jsonLocs = new HashMap<>(CommonInternals.jsonLocs);
-                CommonInternals.craftingRecipeCatalog = new HashMap<>(CommonInternals.craftingRecipeCatalog);
-                CommonInternals.craftingRecipeCatalogFake = new HashMap<>(CommonInternals.craftingRecipeCatalogFake);
-                CommonInternals.warpMap = new HashMap<>(CommonInternals.warpMap);
-                CommonInternals.seedList = new HashMap<>(CommonInternals.seedList);
-            }, "ThaumicSpeedup/AspectThread");
-            ThaumicSpeedup.aspectsThread.start();
+            ThaumicSpeedup.LOGGER.info("Beginning aspects registration...");
+            Stopwatch stopwatch = Stopwatch.createStarted();
+            CommonInternals.objectTags.clear();
+            registerItemAspects();
+            registerEntityAspects();
+            AspectRegistryEvent are = new AspectRegistryEvent();
+            are.register = ThaumicSpeedup.PROXY_INSTANCE;
+            MinecraftForge.EVENT_BUS.post(are);
+            ThaumicSpeedup.LOGGER.info("Aspects registration completed in {}.", stopwatch.stop());
+            // Write aspects to cache
+            try {
+                stopwatch.start();
+                File tempAspectsCache = File.createTempFile("thaumicspeedup-aspects_cache", null);
+                tempAspectsCache.deleteOnExit();
+                FileOutputStream fileOutputStream = new FileOutputStream(tempAspectsCache);
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                Int2ObjectMap<Object2IntMap<String>> objectTags = new Int2ObjectOpenHashMap<>();
+                CommonInternals.objectTags.forEach((k, v) -> objectTags.put(k, v.aspects.entrySet().stream().collect(Object2IntArrayMap::new, (m, av) -> m.put(av.getKey().getTag(), av.getValue()), Map::putAll)));
+                objectOutputStream.writeObject(objectTags);
+                fileOutputStream.close();
+                objectOutputStream.close();
+                File thaumicSpeedupFolder = new File((File) Launch.blackboard.get("CachesFolderFile"), "thaumicspeedup");
+                thaumicSpeedupFolder.mkdirs();
+                File aspectsCache = new File(thaumicSpeedupFolder, "aspects_cache.bin");
+                aspectsCache.createNewFile();
+                Files.move(tempAspectsCache, aspectsCache);
+                ThaumicSpeedup.LOGGER.info("Aspects serialization complete! Taken {}.", stopwatch.stop());
+                ThaumicSpeedup.lateObjectTags = new HashMap<>();
+            } catch (IOException e) {
+                ThaumicSpeedup.LOGGER.error("Aspects serialization failed!");
+                e.printStackTrace();
+            }
+        }
+        // Before moving on make sure cache loading thread is finished. (if it was started)
+        if (ThaumicSpeedup.aspectsThread != null) {
+            try {
+                ThaumicSpeedup.aspectsThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

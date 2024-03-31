@@ -4,10 +4,8 @@ import com.google.common.base.Stopwatch;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import thaumcraft.api.aspects.Aspect;
@@ -19,7 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Set;
+import java.util.HashMap;
 
 @Mod(modid = Tags.MODID, name = Tags.MODNAME, version = Tags.VERSION, dependencies = "required:thaumcraft;required:persistency")
 public class ThaumicSpeedup {
@@ -30,14 +28,14 @@ public class ThaumicSpeedup {
     public static volatile boolean persistentAspectsCache = true;
     public static Thread aspectsThread;
 
-    public static ThreadLocal<Set<ResourceLocation>> craftingRegistryKeys;
+    public static HashMap<Integer, AspectList> lateObjectTags;
 
     @Mod.EventHandler
     public void construct(FMLConstructionEvent event) {
         if ((boolean) Launch.blackboard.getOrDefault("ConsistentLoad", false)) {
             File aspectsCache = new File((File) Launch.blackboard.get("CachesFolderFile"), "thaumicspeedup/aspects_cache.bin");
             if (aspectsCache.isFile() && aspectsCache.exists() && aspectsCache.length() > 0L) {
-                new Thread(() -> {
+                aspectsThread = new Thread(() -> {
                     try {
                         ThaumicSpeedup.LOGGER.info("Offloading aspects deserialization...");
                         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -52,24 +50,15 @@ public class ThaumicSpeedup {
                         objectStream.close();
                         fileStream.close();
                         ThaumicSpeedup.LOGGER.info("Aspects deserialization complete! Taken {}.", stopwatch.stop());
+                        ThaumicSpeedup.lateObjectTags = new HashMap<>();
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                         persistentAspectsCache = false;
                     }
-                }, "ThaumicSpeedup/AspectThread-0").start();
+                }, "ThaumicSpeedup/AspectThread");
+                aspectsThread.start();
             } else {
                 persistentAspectsCache = false;
-            }
-        }
-    }
-
-    @Mod.EventHandler
-    public void loadComplete(FMLLoadCompleteEvent event) {
-        if (aspectsThread != null) {
-            try {
-                aspectsThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }
