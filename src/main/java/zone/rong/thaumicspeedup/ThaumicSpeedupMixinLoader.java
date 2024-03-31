@@ -1,17 +1,21 @@
 package zone.rong.thaumicspeedup;
 
 import net.minecraftforge.fml.common.Loader;
-import org.spongepowered.asm.mixin.Mixins;
-import zone.rong.mixinbooter.MixinLoader;
+import zone.rong.mixinbooter.ILateMixinLoader;
 
-@MixinLoader
-public class ThaumicSpeedupMixinLoader {
+import java.util.ArrayList;
+import java.util.List;
 
-    {
-        Mixins.addConfiguration("mixins.thaumicspeedup.json");
+public class ThaumicSpeedupMixinLoader implements ILateMixinLoader {
+
+    @Override
+    public List<String> getMixinConfigs() {
+        ArrayList<String> configs = new ArrayList<>();
+        configs.add("mixins.thaumicspeedup.json");
         if (Loader.isModLoaded("betterwithmods")) {
-            Mixins.addConfiguration("mixins.thaumicspeedup_bwmcompat.json");
+            configs.add("mixins.thaumicspeedup_bwmcompat.json");
         }
+        return configs;
     }
 
 }
