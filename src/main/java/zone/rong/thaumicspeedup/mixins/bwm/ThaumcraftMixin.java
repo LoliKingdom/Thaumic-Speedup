@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -33,8 +34,9 @@ public abstract class ThaumcraftMixin {
 		ci.cancel();
 	}
 
+	@Unique
 	@SubscribeEvent
-	public void registerAspects(AspectRegistryEvent event) {
+	public void thaumicSpeedup$registerAspects(AspectRegistryEvent event) {
 		this.registerAspectOverrides();
 		this.registerAspects();
 		registerAnvilRecipeAspects();
