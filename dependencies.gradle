@@ -44,7 +44,7 @@ dependencies {
     implementation rfg.deobf('curse.maven:persistency-554387:3556105')
 
     // soft deps
-    implementation rfg.deobf('curse.maven:bwm-suite-246760:3289033')
-    implementation rfg.deobf('curse.maven:bwm-core-294335:2624990')
+    compileOnly rfg.deobf('curse.maven:bwm-suite-246760:3289033')
+    compileOnly rfg.deobf('curse.maven:bwm-core-294335:2624990')
 
 }
