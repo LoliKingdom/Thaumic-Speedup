@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import thaumcraft.api.aspects.AspectRegistryEvent;
 import thaumcraft.api.internal.CommonInternals;
 import thaumcraft.common.config.ConfigAspects;
+import zone.rong.thaumicspeedup.DummyAspectEventProxy;
 import zone.rong.thaumicspeedup.ThaumicSpeedup;
 
 import java.io.File;
@@ -73,6 +74,13 @@ public abstract class ConfigAspectsMixin {
         if (ThaumicSpeedup.aspectsThread != null) {
             try {
                 ThaumicSpeedup.aspectsThread.join();
+                // since we don't serialize entity aspects make sure to initialize thaum's
+                registerEntityAspects();
+                // and send a dummy registry event for any entity aspects that get registered by other mods in that
+                AspectRegistryEvent are = new AspectRegistryEvent();
+                ThaumicSpeedup.PROXY_INSTANCE = new DummyAspectEventProxy();
+                are.register = ThaumicSpeedup.PROXY_INSTANCE;
+                MinecraftForge.EVENT_BUS.post(are);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
