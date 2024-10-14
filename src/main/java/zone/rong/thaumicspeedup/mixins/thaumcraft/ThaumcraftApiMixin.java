@@ -14,8 +14,14 @@ import zone.rong.thaumicspeedup.ThaumicSpeedup;
 @Mixin(value = ThaumcraftApi.class, remap = false)
 public class ThaumcraftApiMixin {
 
-    @Redirect(method = "*", at = @At(value = "NEW", target = "Lthaumcraft/api/aspects/AspectEventProxy;<init>()V"))
-    private static AspectEventProxy useProxyInstanceSingleton() {
+    @Redirect(
+        method = {"registerObjectTag*", "registerComplexObjectTag*"},
+        at = @At(
+            value = "INVOKE",
+            target = "Lthaumcraft/api/aspects/AspectEventProxy;<init>()V"
+        )
+    )
+    private static AspectEventProxy useProxyInstanceSingleton(AspectEventProxy old) {
         return ThaumicSpeedup.PROXY_INSTANCE;
     }
 
