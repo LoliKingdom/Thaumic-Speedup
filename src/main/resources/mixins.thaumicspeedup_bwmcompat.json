@@ -1,10 +1,13 @@
 {
-  "package": "zone.rong.thaumicspeedup.mixins.bwm",
-  "refmap": "mixins.thaumicspeedup.refmap.json",
-  "target": "@env(DEFAULT)",
-  "minVersion": "0.6",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "ThaumcraftMixin"
-  ]
+	"package": "zone.rong.thaumicspeedup.mixins.bwm",
+	"required": true,
+	"refmap": "mixins.thaumicspeedup.refmap.json",
+	"target": "@env(DEFAULT)",
+	"minVersion": "0.8.5",
+	"compatibilityLevel": "JAVA_8",
+	"mixins": [
+		"ThaumcraftMixin"
+	],
+	"server": [],
+	"client": []
 }

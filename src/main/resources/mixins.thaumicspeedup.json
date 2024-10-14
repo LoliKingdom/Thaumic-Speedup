@@ -1,8 +1,9 @@
 {
 	"package": "zone.rong.thaumicspeedup.mixins",
+	"required": true,
 	"refmap": "mixins.thaumicspeedup.refmap.json",
 	"target": "@env(DEFAULT)",
-	"minVersion": "0.6",
+	"minVersion": "0.8.5",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
 		"CommonInternalsMixin",
@@ -10,5 +11,7 @@
 		"ThaumcraftApiHelperMixin",
 		"ThaumcraftApiMixin",
 		"ThaumcraftCraftingManagerMixin"
-	]
+	],
+	"server": [],
+	"client": []
 }
