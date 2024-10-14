@@ -8,9 +8,9 @@ import zone.rong.mixinbooter.MixinLoader;
 public class ThaumicSpeedupMixinLoader {
 
     {
-        Mixins.addConfiguration("mixins.thaumicspeedup.json");
+        Mixins.addConfiguration("tmp/mixins.thaumicspeedup.json");
         if (Loader.isModLoaded("betterwithmods")) {
-            Mixins.addConfiguration("mixins.thaumicspeedup_bwmcompat.json");
+            Mixins.addConfiguration("tmp/mixins.thaumicspeedup_bwmcompat.json");
         }
     }
 
