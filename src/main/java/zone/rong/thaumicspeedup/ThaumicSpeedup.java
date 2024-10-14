@@ -25,11 +25,11 @@ import java.util.Set;
     modid = Tags.MOD_ID,
     name = Tags.MOD_NAME,
     version = Tags.VERSION,
-    dependencies = "required:thaumcraft;required:persistency"
+    dependencies = "required:thaumcraft;required:persistency;required-after:mixinbooter"
 )
 public class ThaumicSpeedup {
 
-    public static final Logger LOGGER = LogManager.getLogger("ThaumicSpeedup");
+    public static final Logger LOGGER = LogManager.getLogger(Tags.MOD_NAME);
     public static final AspectEventProxy PROXY_INSTANCE = new AspectEventProxy();
 
     public static volatile boolean persistentAspectsCache = true;

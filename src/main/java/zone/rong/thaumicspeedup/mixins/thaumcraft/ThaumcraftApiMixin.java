@@ -15,9 +15,9 @@ import zone.rong.thaumicspeedup.ThaumicSpeedup;
 public class ThaumcraftApiMixin {
 
     @Redirect(
-        method = {"registerObjectTag*", "registerComplexObjectTag*"},
+        method = "*",
         at = @At(
-            value = "INVOKE",
+            value = "NEW",
             target = "Lthaumcraft/api/aspects/AspectEventProxy;<init>()V"
         )
     )
