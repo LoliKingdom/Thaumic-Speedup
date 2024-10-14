@@ -39,5 +39,4 @@ public abstract class ThaumcraftMixin {
 		this.registerAspects();
 		registerAnvilRecipeAspects();
 	}
-
 }

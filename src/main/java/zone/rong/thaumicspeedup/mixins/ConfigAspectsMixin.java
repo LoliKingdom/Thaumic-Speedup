@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSets;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -18,17 +17,14 @@ import org.spongepowered.asm.mixin.Shadow;
 import thaumcraft.api.aspects.AspectRegistryEvent;
 import thaumcraft.api.internal.CommonInternals;
 import thaumcraft.common.config.ConfigAspects;
-import zone.rong.thaumicspeedup.ConcurrentHashMapTypedMap;
 import zone.rong.thaumicspeedup.ThaumicSpeedup;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Mixin(value = ConfigAspects.class, remap = false)
 public abstract class ConfigAspectsMixin {

@@ -21,7 +21,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Set;
 
-@Mod(modid = "thaumicspeedup", name = "Thaumic Speedup", version = "4.0", dependencies = "required:thaumcraft;required:persistency")
+@Mod(
+    modid = Tags.MOD_ID,
+    name = Tags.MOD_NAME,
+    version = Tags.VERSION,
+    dependencies = "required:thaumcraft;required:persistency"
+)
 public class ThaumicSpeedup {
 
     public static final Logger LOGGER = LogManager.getLogger("ThaumicSpeedup");
@@ -34,32 +39,33 @@ public class ThaumicSpeedup {
 
     @Mod.EventHandler
     public void construct(FMLConstructionEvent event) {
-        if ((boolean) Launch.blackboard.getOrDefault("ConsistentLoad", false)) {
-            File aspectsCache = new File((File) Launch.blackboard.get("CachesFolderFile"), "thaumicspeedup/aspects_cache.bin");
-            if (aspectsCache.isFile() && aspectsCache.exists() && aspectsCache.length() > 0L) {
-                new Thread(() -> {
-                    try {
-                        ThaumicSpeedup.LOGGER.info("Offloading aspects deserialization...");
-                        Stopwatch stopwatch = Stopwatch.createStarted();
-                        FileInputStream fileStream = new FileInputStream(aspectsCache);
-                        ObjectInputStream objectStream = new ObjectInputStream(fileStream);
-                        Int2ObjectMap<Object2IntMap<String>> objectTags = (Int2ObjectMap<Object2IntMap<String>>) objectStream.readObject();
-                        objectTags.forEach((i, m) -> {
-                            AspectList aspectList = new AspectList();
-                            m.forEach((aspect, value) -> aspectList.aspects.put(Aspect.getAspect(aspect), value));
-                            CommonInternals.objectTags.put(i, aspectList);
-                        });
-                        objectStream.close();
-                        fileStream.close();
-                        ThaumicSpeedup.LOGGER.info("Aspects deserialization complete! Taken {}.", stopwatch.stop());
-                    } catch (IOException | ClassNotFoundException e) {
-                        e.printStackTrace();
-                        persistentAspectsCache = false;
-                    }
-                }, "ThaumicSpeedup/AspectThread-0").start();
-            } else {
-                persistentAspectsCache = false;
-            }
+        if (!((boolean) Launch.blackboard.getOrDefault("ConsistentLoad", false))) {
+            return;
+        }
+        File aspectsCache = new File((File) Launch.blackboard.get("CachesFolderFile"), "thaumicspeedup/aspects_cache.bin");
+        if (aspectsCache.isFile() && aspectsCache.exists() && aspectsCache.length() > 0L) {
+            new Thread(() -> {
+                try {
+                    ThaumicSpeedup.LOGGER.info("Offloading aspects deserialization...");
+                    Stopwatch stopwatch = Stopwatch.createStarted();
+                    FileInputStream fileStream = new FileInputStream(aspectsCache);
+                    ObjectInputStream objectStream = new ObjectInputStream(fileStream);
+                    Int2ObjectMap<Object2IntMap<String>> objectTags = (Int2ObjectMap<Object2IntMap<String>>) objectStream.readObject();
+                    objectTags.forEach((i, m) -> {
+                        AspectList aspectList = new AspectList();
+                        m.forEach((aspect, value) -> aspectList.aspects.put(Aspect.getAspect(aspect), value));
+                        CommonInternals.objectTags.put(i, aspectList);
+                    });
+                    objectStream.close();
+                    fileStream.close();
+                    ThaumicSpeedup.LOGGER.info("Aspects deserialization complete! Taken {}.", stopwatch.stop());
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    persistentAspectsCache = false;
+                }
+            }, "ThaumicSpeedup/AspectThread-0").start();
+        } else {
+            persistentAspectsCache = false;
         }
     }
 
