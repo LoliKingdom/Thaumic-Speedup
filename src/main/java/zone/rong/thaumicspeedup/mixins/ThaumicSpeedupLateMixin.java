@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
  * @author ZZZank
  */
 public class ThaumicSpeedupLateMixin implements ILateMixinLoader {
+
     @Override
     public List<String> getMixinConfigs() {
         return Arrays.stream(Tags.MIXIN_CONFIGS.split(" "))

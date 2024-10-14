@@ -21,7 +21,7 @@ public class ThaumcraftApiMixin {
             target = "Lthaumcraft/api/aspects/AspectEventProxy;<init>()V"
         )
     )
-    private static AspectEventProxy useProxyInstanceSingleton(AspectEventProxy old) {
+    private static AspectEventProxy useProxyInstanceSingleton() {
         return ThaumicSpeedup.PROXY_INSTANCE;
     }
 
@@ -38,5 +38,4 @@ public class ThaumcraftApiMixin {
             ci.cancel();
         }
     }
-
 }
