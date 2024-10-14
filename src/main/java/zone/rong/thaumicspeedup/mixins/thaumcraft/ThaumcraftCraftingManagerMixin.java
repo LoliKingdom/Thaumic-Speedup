@@ -1,4 +1,4 @@
-package zone.rong.thaumicspeedup.mixins;
+package zone.rong.thaumicspeedup.mixins.thaumcraft;
 
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;

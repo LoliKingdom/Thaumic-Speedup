@@ -1,4 +1,4 @@
-package zone.rong.thaumicspeedup.mixins.bwm;
+package zone.rong.thaumicspeedup.mixins.betterwithmods;
 
 import betterwithmods.module.compat.thaumcraft.Thaumcraft;
 import net.minecraftforge.common.MinecraftForge;

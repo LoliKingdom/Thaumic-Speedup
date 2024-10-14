@@ -1,5 +1,5 @@
 {
-	"package": "zone.rong.thaumicspeedup.mixins",
+	"package": "zone.rong.thaumicspeedup.mixins.thaumcraft",
 	"required": true,
 	"refmap": "mixins.thaumicspeedup.refmap.json",
 	"target": "@env(DEFAULT)",

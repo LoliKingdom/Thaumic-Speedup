@@ -1,4 +1,4 @@
-package zone.rong.thaumicspeedup.mixins;
+package zone.rong.thaumicspeedup.mixins.thaumcraft;
 
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;

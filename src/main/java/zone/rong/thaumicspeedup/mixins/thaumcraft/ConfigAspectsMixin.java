@@ -1,4 +1,4 @@
-package zone.rong.thaumicspeedup.mixins;
+package zone.rong.thaumicspeedup.mixins.thaumcraft;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.io.Files;
