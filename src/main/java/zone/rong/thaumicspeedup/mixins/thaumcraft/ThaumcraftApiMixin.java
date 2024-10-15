@@ -1,4 +1,4 @@
-package zone.rong.thaumicspeedup.mixins;
+package zone.rong.thaumicspeedup.mixins.thaumcraft;
 
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +14,13 @@ import zone.rong.thaumicspeedup.ThaumicSpeedup;
 @Mixin(value = ThaumcraftApi.class, remap = false)
 public class ThaumcraftApiMixin {
 
-    @Redirect(method = "*", at = @At(value = "NEW", target = "Lthaumcraft/api/aspects/AspectEventProxy;<init>()V"))
+    @Redirect(
+        method = "*",
+        at = @At(
+            value = "NEW",
+            target = "Lthaumcraft/api/aspects/AspectEventProxy;<init>()V"
+        )
+    )
     private static AspectEventProxy useProxyInstanceSingleton() {
         return ThaumicSpeedup.PROXY_INSTANCE;
     }
@@ -32,5 +38,4 @@ public class ThaumcraftApiMixin {
             ci.cancel();
         }
     }
-
 }

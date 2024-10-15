@@ -1,4 +1,4 @@
-package zone.rong.thaumicspeedup.mixins;
+package zone.rong.thaumicspeedup.mixins.thaumcraft;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.item.ItemStack;
