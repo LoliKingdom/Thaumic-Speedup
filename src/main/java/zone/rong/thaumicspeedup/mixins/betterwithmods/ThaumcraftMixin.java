@@ -4,9 +4,7 @@ import betterwithmods.module.compat.thaumcraft.Thaumcraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Pseudo;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,7 +17,6 @@ public abstract class ThaumcraftMixin {
 	@Shadow public static void registerAnvilRecipeAspects() {
 		throw new AssertionError();
 	}
-
 	@Shadow public abstract void registerAspectOverrides();
 	@Shadow public abstract void registerAspects();
 
@@ -28,15 +25,19 @@ public abstract class ThaumcraftMixin {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	@Inject(method = "postInit", at = @At("HEAD"), cancellable = true)
-	private void disablePostInit(FMLPostInitializationEvent event, CallbackInfo ci) {
-		ci.cancel();
-	}
+	/**
+	 * @author Rongmario
+	 * @reason Use AspectRegistryEvent for aspect registration/replacement purposes
+	 */
+	@Overwrite
+	public void postInit(FMLPostInitializationEvent event) { }
 
+	@Unique
 	@SubscribeEvent
-	public void registerAspects(AspectRegistryEvent event) {
+	public void thaumicspeedup$registerAspects(AspectRegistryEvent event) {
 		this.registerAspectOverrides();
 		this.registerAspects();
 		registerAnvilRecipeAspects();
 	}
+
 }

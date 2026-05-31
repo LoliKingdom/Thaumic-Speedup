@@ -13,7 +13,7 @@ import java.util.List;
 @Mixin(value = ThaumcraftApiHelper.class, remap = false)
 public class ThaumcraftApiHelperMixin {
 
-    @Unique private static String[] oreNames;
+    @Unique private static String[] thaumicspeedup$oreNames;
 
     /**
      * @author Rongmario
@@ -24,11 +24,11 @@ public class ThaumcraftApiHelperMixin {
         oreDict = oreDict.trim();
         if (oreDict.endsWith("*")) {
             final ObjectArrayList<ItemStack> ores = new ObjectArrayList<>();
-            if (oreNames == null) {
-                oreNames = OreDictionary.getOreNames();
+            if (thaumicspeedup$oreNames == null) {
+                thaumicspeedup$oreNames = OreDictionary.getOreNames();
             }
             String wildcard = oreDict.replaceAll("\\*", "");
-            for (String ore : oreNames) {
+            for (String ore : thaumicspeedup$oreNames) {
                 if (ore.startsWith(wildcard)) {
                     ores.addAll(OreDictionary.getOres(ore, false));
                 }
