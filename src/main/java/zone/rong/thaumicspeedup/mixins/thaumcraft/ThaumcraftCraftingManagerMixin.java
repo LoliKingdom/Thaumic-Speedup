@@ -16,6 +16,7 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.common.lib.crafting.ThaumcraftCraftingManager;
 import zone.rong.thaumicspeedup.ThaumcraftRecipeIndex;
+import zone.rong.thaumicspeedup.ThaumicSpeedup;
 
 @Mixin(value = ThaumcraftCraftingManager.class, remap = false)
 public abstract class ThaumcraftCraftingManagerMixin {
@@ -59,17 +60,13 @@ public abstract class ThaumcraftCraftingManagerMixin {
                         ph.add(Aspect.MAGIC, (int) (Math.sqrt(1 + (ar.getVis() / 2)) / out.getCount()));
                     }
                 }
-                for (Aspect as : ph.copy().getAspects()) {
-                    if (ph.getAmount(as) <= 0) {
-                        ph.remove(as);
-                    }
-                }
+                ph.aspects.values().removeIf(a -> a <= 0);
                 if (ph.visSize() < value && ph.visSize() > 0) {
                     ret = ph;
                     value = ph.visSize();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                ThaumicSpeedup.LOGGER.error("Failed to generate aspect tags from a crafting recipe for {}", stack, e);
             }
         }
         return ret;

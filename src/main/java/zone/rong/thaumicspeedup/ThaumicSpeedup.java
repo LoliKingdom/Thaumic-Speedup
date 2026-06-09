@@ -60,7 +60,7 @@ public class ThaumicSpeedup {
                     fileStream.close();
                     ThaumicSpeedup.LOGGER.info("Aspects deserialization complete! Taken {}.", stopwatch.stop());
                 } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+                    ThaumicSpeedup.LOGGER.error("Failed to deserialize the aspects cache", e);
                     persistentAspectsCache = false;
                 }
             }, "ThaumicSpeedup/AspectThread-0").start();
@@ -75,9 +75,12 @@ public class ThaumicSpeedup {
             try {
                 aspectsThread.join();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                ThaumicSpeedup.LOGGER.error("Interrupted while waiting for aspect registration to finish", e);
             }
         }
+        // The crafting-recipe reverse index is only needed for the startup aspect-tag pass.
+        // Drop it once loading is done; forItem rebuilds it lazily for any runtime lookups.
+        ThaumcraftRecipeIndex.clear();
     }
 
 }
