@@ -68,8 +68,7 @@ public abstract class ConfigAspectsMixin {
                     Files.move(tempAspectsCache, aspectsCache);
                     ThaumicSpeedup.LOGGER.info("Aspects serialization complete! Taken {}.", stopwatch.stop());
                 } catch (IOException e) {
-                    ThaumicSpeedup.LOGGER.error("Aspects serialization failed!");
-                    e.printStackTrace();
+                    ThaumicSpeedup.LOGGER.error("Aspects serialization failed!", e);
                 }
                 ThaumicSpeedup.craftingRegistryKeys = null;
                 CommonInternals.jsonLocs = new HashMap<>(CommonInternals.jsonLocs);
