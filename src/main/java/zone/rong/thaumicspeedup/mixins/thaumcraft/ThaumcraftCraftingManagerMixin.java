@@ -71,4 +71,5 @@ public abstract class ThaumcraftCraftingManagerMixin {
         }
         return ret;
     }
+
 }

@@ -37,7 +37,7 @@ public final class ThaumcraftRecipeIndex {
             }
         }
         List<IRecipe> out = idx.get(Item.getIdFromItem(item));
-        return out != null ? out : Collections.<IRecipe>emptyList();
+        return out != null ? out : Collections.emptyList();
     }
 
     // Drops the in-memory index. forItem rebuilds it lazily if it is queried again.
@@ -53,7 +53,7 @@ public final class ThaumcraftRecipeIndex {
 
     private static void build(Set<ResourceLocation> keys) {
         long t0 = System.nanoTime();
-        Int2ObjectMap<List<IRecipe>> idx = new Int2ObjectOpenHashMap<List<IRecipe>>(4096);
+        Int2ObjectMap<List<IRecipe>> idx = new Int2ObjectOpenHashMap<>(4096);
         for (ResourceLocation key : keys) {
             IRecipe recipe = CraftingManager.REGISTRY.getObject(key);
             if (recipe == null) {
@@ -66,7 +66,7 @@ public final class ThaumcraftRecipeIndex {
             int id = Item.getIdFromItem(output.getItem());
             List<IRecipe> bucket = idx.get(id);
             if (bucket == null) {
-                bucket = new ArrayList<IRecipe>(2);
+                bucket = new ArrayList<>(2);
                 idx.put(id, bucket);
             }
             bucket.add(recipe);
