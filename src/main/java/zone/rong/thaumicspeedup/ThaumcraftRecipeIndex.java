@@ -14,9 +14,12 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 
-// output item id -> recipes index for ThaumcraftCraftingManagerMixin. Built from the
-// craftingRegistryKeys snapshot when set (so it's safe on the async aspect thread), else
-// the live registry. Rebuilt when the key set changes size, so it tracks later additions.
+/**
+ * Outputs item id => recipes index for {@link zone.rong.thaumicspeedup.mixins.thaumcraft.ThaumcraftCraftingManagerMixin}
+ * replacing the per-call full-registry scan in {@link thaumcraft.common.lib.crafting.ThaumcraftCraftingManager#generateTagsFromCraftingRecipes(ItemStack, ArrayList<String>}.
+ * <p>
+ * Built from {@link CraftingManager#REGISTRY} and rebuilds when the key set changes size to track later additions
+ */
 public final class ThaumcraftRecipeIndex {
 
     private static volatile Int2ObjectMap<List<IRecipe>> index;
@@ -25,7 +28,7 @@ public final class ThaumcraftRecipeIndex {
     private ThaumcraftRecipeIndex() {}
 
     public static List<IRecipe> forItem(Item item) {
-        Set<ResourceLocation> keys = currentKeys();
+        Set<ResourceLocation> keys = CraftingManager.REGISTRY.getKeys();
         int size = keys.size();
         Int2ObjectMap<List<IRecipe>> idx = index;
         if (idx == null || size != builtAtSize) {
@@ -44,11 +47,6 @@ public final class ThaumcraftRecipeIndex {
     public static synchronized void clear() {
         index = null;
         builtAtSize = -1;
-    }
-
-    private static Set<ResourceLocation> currentKeys() {
-        ThreadLocal<Set<ResourceLocation>> snapshot = ThaumicSpeedup.craftingRegistryKeys;
-        return snapshot != null ? snapshot.get() : CraftingManager.REGISTRY.getKeys();
     }
 
     private static void build(Set<ResourceLocation> keys) {
