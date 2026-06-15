@@ -1,21 +1,14 @@
-## TemplateDevEnv
-_For Kotlin see [TemplateDevEnvKt](https://github.com/CleanroomMC/TemplateDevEnvKt)_
+## Thaumic Speedup
 
-Template workspace for modding Minecraft 1.12.2. Licensed under MIT, it is made for public use.
+A lightweight, drop-in performance mod for Thaumcraft 6 on Minecraft 1.12.2. It targets the slow, allocation-heavy paths in Thaumcraft's aspect registration system. It scales badly in large modpacks with thousands of recipes and items.
 
-This template runs on **Java 25**, **Gradle 9.2.1** + **[RetroFuturaGradle](https://github.com/GTNewHorizons/RetroFuturaGradle) 2.0.2** + **Forge 14.23.5.2847**.
+### What it does
 
-With **coremod and mixin support** that is easy to configure.
-
-### Instructions:
-
-1. Click `use this template` at the top.
-2. Clone the repository that you have created with this template to your local machine.
-3. Make sure IDEA is using Java 25 for Gradle before you sync the project. Verify this by going to IDEA's `Settings > Build, Execution, Deployment > Build Tools > Gradle > Gradle JVM`.
-4. Open the project folder in IDEA. When prompted, click "Load Gradle Project" as it detects the `build.gradle`, if you weren't prompted, right-click the project's `build.gradle` in IDEA, select `Link Gradle Project`, after completion, hit `Refresh All` in the gradle tab on the right.
-5. Run gradle tasks such as `runClient` and `runServer` in the IDEA gradle tab, or use the auto-imported run configurations like `1. Run Client`.
-
-### Notes:
-- Dependencies script in [gradle/scripts/dependencies.gradle](gradle/scripts/dependencies.gradle), explanations are commented in the file.
-- Publishing script in [gradle/scripts/publishing.gradle](gradle/scripts/publishing.gradle).
-- When writing Mixins on IntelliJ, it is advisable to use latest [MinecraftDev Fork for RetroFuturaGradle](https://github.com/eigenraven/MinecraftDev/releases).
+- Reverse recipe index for aspect generation
+  - Thaumcraft derives an item's aspects by scanning the entire crafting registry once per item: O(items * recipes) and this does not scale well at all.
+  - Thaumic Speedup builds an output stack -> recipes index so each subsequent lookup is a fetch instead of a full-registry walk. The index is built only for the startup pass and dropped afterward, rebuilding lazily if needed at runtime.
+- Allocation-free item identity hashing
+  - Thaumcraft's `generateUniqueItemstackId` copies the ItemStack, serializes it to NBT, stringifies it, and hashes it on every aspect lookup.
+  - Thaumic Speedup replaces this with a direct hash of the item id + item damage (+ NBT when need be), allocating a lot less.
+- Cleaner deprecated API routing
+  - Routes Thaumcraft's deprecated static `registerObjectTag` calls through a singleton event proxy.
